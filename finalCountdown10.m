@@ -33,39 +33,35 @@ for ii = 1:8
     len(ii) = length(rdata_struct{ii});
 end
 
-%% convert raw data to samples
-
+%%% why is detection being done seperately?
+% packet detection on stream 5
 
 data = rdata_struct{5};
 temp = 1i*data(:, 1) + data(:, 2); % convert IQ samples to complex numbers
 temp = simple_bandpass(temp, 2, r); % bandpass filter???
 
-%% find packet in stream
-
 maxi = 0;
 maxval = 0;
 
 % windowed energy detection to find the packet
-for i = packet_size + 1:1000:length(temp)-packet_size-1
+for i = (packet_size + 1):1000:(length(temp) - packet_size - 1)
     if(sumsqr(real(temp(i:i+packet_size)))/sumsqr(real(temp(i-packet_size:i)))>maxval)
         maxi = i;
         maxval = sumsqr(real(temp(i:i+packet_size)))/sumsqr(real(temp(i-packet_size:i)));
     end
 end
-
 rval2 = maxi;
 
-loc_weight = [];
+% packet detection on stream 1
+
 data = rdata_struct{1};
-
-
 temp = 1i*data(:, 1) + data(:, 2);
 temp = simple_bandpass(temp, 2, r);
 
 maxi = 0;
 maxval = 0;
 
-for i = packet_size+1:1000:length(temp)-packet_size-1
+for i = (packet_size + 1):1000:(length(temp) - packet_size - 1)
     if(sumsqr(real(temp(i:i+packet_size)))/sumsqr(real(temp(i-packet_size:i)))>maxval)
         maxi = i;
         maxval = sumsqr(real(temp(i:i+packet_size)))/sumsqr(real(temp(i-packet_size:i)));
@@ -73,8 +69,11 @@ for i = packet_size+1:1000:length(temp)-packet_size-1
 end
 
 rval1 = maxi;
-temp = [temp(1:maxi - 0.25*packet_size);temp(maxi + 2*packet_size:end)];
 
+
+temp = [temp(1:(maxi - 0.25 * packet_size)); temp((maxi + 2 * packet_size):end)];
+
+%%
 % create base upchirp and downchirps
 
 [up,down] = my_create_chirpspecial1(bandwidth_sampling_factor*Fs,Ts,reset_freq,final_freq,chirp_size);
@@ -106,9 +105,13 @@ end
 [maxval1 maxloc1]=max(maxi);
 maxloc=maxloc-1001+maxloc1;
 eval((sprintf('s%d=temp;', 1)))
+
 ps_struct = [];
+loc_weight = [];
+
 ps_struct=[ps_struct;maxloc];
 loc_weight=[loc_weight;maxval1];
+
 for rec=2:4
     data=rdata_struct{rec};
     temp=1i*data(:, 1)+data(:, 2);
