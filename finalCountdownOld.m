@@ -3,20 +3,20 @@ SF = 10;
 chirp_size=576;
 packet_length=20;
 packet_size=chirp_size*packet_length;
-extra_sampling_factor = 1; % table  Sample/KHz       extra_sampling_factor
+bandwidth_sampling_factor = 1; % table  Sample/KHz       bandwidth_sampling_factor
 %         125                1
 %         250                2
 %         500                3
 Fs = BW;
 symbol_length=chirp_size;
-symbol_length_upsampled = extra_sampling_factor*chirp_size;
+symbol_length_upsampled = bandwidth_sampling_factor*chirp_size;
 freq_shift_per_sample =  Fs/symbol_length; % How each frequency bin maps to a difference in frequency
 Ts = 1/freq_shift_per_sample; % Symbol Duration
 f = linspace(-BW/2,BW/2-freq_shift_per_sample,symbol_length); % The X-Axis
 % of the FFT plot
 reset_freq = -BW/2; % The initial frequency of the base chirp
 final_freq = (BW/2);%-freq_shift_per_sample; % The final frequency
-[up,down] = my_create_chirpspecial(extra_sampling_factor*Fs,Ts,reset_freq,final_freq,chirp_size);
+[up,down] = my_create_chirpspecial(bandwidth_sampling_factor*Fs,Ts,reset_freq,final_freq,chirp_size);
 nsym=38.25;
 len = zeros(1, 8);
 rdata_struct = cell(1, 8);
