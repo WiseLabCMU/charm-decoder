@@ -33,7 +33,7 @@ for ii = 1:8
 	len(ii) = length(rdata_struct{ii});
 end
 
-%%% why is detection being done seperately?
+%%% why is detection being done seperately on different streams?
 % packet detection on stream 5
 
 data = rdata_struct{5};
@@ -61,6 +61,7 @@ temp = simple_bandpass(temp, 2, r);
 maxi = 0;
 maxval = 0;
 
+% windowed energy detection to find the packet
 for i = (packet_size + 1):1000:(length(temp) - packet_size - 1)
 	if(sumsqr(real(temp(i:i+packet_size)))/sumsqr(real(temp(i-packet_size:i)))>maxval)
 		maxi = i;
@@ -90,12 +91,14 @@ for i = 1:1000:length(temp)-length(appSpecial)-1
 	maxi(round(i/1000)+1) = max(abs(fftshift(fft(temp(i:i+length(appSpecial)-1).*appSpecial))));
 end
 
+
+% huh?
 if(rval2>rval1)
-	[maxval maxloc]=max(maxi(1:end-(rval2-rval1)/1000));
-	maxloc=maxloc*1000+1;
+	[maxval maxloc] = max(maxi(1:end-(rval2-rval1)/1000));
+	maxloc = maxloc*1000+1;
 else
-	[maxval maxloc]=max(maxi((rval1-rval2)/1000:end));
-	maxloc=(maxloc+(rval1-rval2)/1000)*1000+1;
+	[maxval maxloc] = max(maxi((rval1-rval2)/1000:end));
+	maxloc = (maxloc+(rval1-rval2)/1000)*1000+1;
 
 end
 maxi=zeros(2001,1);
