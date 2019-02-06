@@ -123,7 +123,10 @@ for i = maxloc-1000:maxloc+1000
 end
 [maxval1, maxloc1] = max(maxi);
 maxloc = maxloc - 1001 + maxloc1;
-eval((sprintf('s%d=temp;', 1)))
+s = cell(1,8);
+s{1} = temp;
+
+% eval((sprintf('s%d=temp;', 1)))
 
 disp("generated reference chirps")
 toc
@@ -154,7 +157,8 @@ for rec = 2:4
     end
     [maxval1, maxloc1]=max(maxi);
     maxloc=maxloc-2001+maxloc1;
-    eval((sprintf('s%d=temp;', rec)))
+%     eval((sprintf('s%d=temp;', rec)))
+    s{rec} = temp;
     ps_struct=[ps_struct;maxloc];
     loc_weight=[loc_weight;maxval1];
 end
@@ -197,7 +201,8 @@ for i=maxloc-2000:maxloc+2000
 end
 [maxval1, maxloc1]=max(maxi);
 maxloc=maxloc-2001+maxloc1;
-eval((sprintf('s%d=temp;', 5)))
+% eval((sprintf('s%d=temp;', 5)))
+s{5} = temp;
 ps_struct=[ps_struct;maxloc];
 loc_weight=[loc_weight;maxval1];
 
@@ -220,7 +225,8 @@ for rec=6:8
     end
     [maxval1, maxloc1]=max(maxi);
     maxloc=maxloc-2001+maxloc1;
-    eval((sprintf('s%d=temp;', rec)))
+%     eval((sprintf('s%d=temp;', rec)))
+    s{rec} = temp;
     ps_struct=[ps_struct;maxloc];
     loc_weight=[loc_weight;maxval1];
 end
@@ -242,13 +248,13 @@ ps_struct(5:8)=repmat(round(second_mean),4,1);
 ps_struct(1:8)=ps_struct(1:8) + ...
         [   
             0; ...
-            ceil((length(s2)-length(s1))/2); ...
-            ceil((length(s3)-length(s1))/2); ...
-            ceil((length(s4)-length(s1))/2); ...
+            ceil((length(s{2})-length(s{1}))/2); ...
+            ceil((length(s{3})-length(s{1}))/2); ...
+            ceil((length(s{4})-length(s{1}))/2); ...
             0; ...
-            ceil((length(s6)-length(s5))/2); ...
-            ceil((length(s7)-length(s5))/2); ...
-            ceil((length(s8)-length(s5))/2)
+            ceil((length(s{6})-length(s{5}))/2); ...
+            ceil((length(s{7})-length(s{5}))/2); ...
+            ceil((length(s{8})-length(s{5}))/2)
         ];
 
 
@@ -257,9 +263,11 @@ p=zeros(samplesPerSymbol*packet_length,max_receiver);
 n=zeros(samplesPerSymbol,max_receiver);
 for i=1:max_receiver
 %     sprintf('p(:,i)=s%d(ps_struct(i):ps_struct(i)+packet_size-1);', i)
-    eval((sprintf('p(:,i)=s%d(ps_struct(i):ps_struct(i)+packet_size-1);', i)));
+%     eval((sprintf('p(:,i)=s%d(ps_struct(i):ps_struct(i)+packet_size-1);', i)));
+    p(:,i)=s{i}(ps_struct(i):ps_struct(i)+packet_size-1);
 %     sprintf('n(:,i)=s%d(ps_struct(i)-5*samplesPerSymbol:ps_struct(i)-4*samplesPerSymbol-1);', i)
-    eval((sprintf('n(:,i)=s%d(ps_struct(i)-5*samplesPerSymbol:ps_struct(i)-4*samplesPerSymbol-1);', i)));
+%     eval((sprintf('n(:,i)=s%d(ps_struct(i)-5*samplesPerSymbol:ps_struct(i)-4*samplesPerSymbol-1);', i)));
+    n(:,i)=s{i}(ps_struct(i)-5*samplesPerSymbol:ps_struct(i)-4*samplesPerSymbol-1);
 end
 
 reference=1;
