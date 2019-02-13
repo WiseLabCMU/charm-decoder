@@ -1,27 +1,29 @@
-BW = 1.25e5;
-SF = 10;
-chirp_size=576;
-packet_length=20;
-packet_size=chirp_size*packet_length;
+BW = 1.25e5; % in Hz
+% SF = 10; % spreading factor: 
+% NOTE:Unused
+chirp_size = 576; % chirp length in number of samples
+% TODO: change this to a known constant
+packet_length = 20; % packet size in number of chirps
+packet_size = chirp_size*packet_length;
 bandwidth_sampling_factor = 1; % table  Sample/KHz       bandwidth_sampling_factor
 %         125                1
 %         250                2
 %         500                3
 Fs = BW;
-symbol_length=chirp_size;
+symbol_length = chirp_size;
 symbol_length_upsampled = bandwidth_sampling_factor*chirp_size;
 freq_shift_per_sample =  Fs/symbol_length; % How each frequency bin maps to a difference in frequency
 Ts = 1/freq_shift_per_sample; % Symbol Duration
-f = linspace(-BW/2,BW/2-freq_shift_per_sample,symbol_length); % The X-Axis
+f = linspace(-BW/2, BW/2-freq_shift_per_sample, symbol_length); % The X-Axis
 % of the FFT plot
 reset_freq = -BW/2; % The initial frequency of the base chirp
 final_freq = (BW/2);%-freq_shift_per_sample; % The final frequency
-[up,down] = my_create_chirpspecial(bandwidth_sampling_factor*Fs,Ts,reset_freq,final_freq,chirp_size);
+[up,down] = my_create_chirpspecial1(bandwidth_sampling_factor*Fs,Ts,reset_freq,final_freq,chirp_size);
 nsym=38.25;r=0;
 len = zeros(1, 8);
 rdata_struct = cell(1, 8);
 for ii=1:8
-    rdata_struct{ii}=importdata(sprintf('p1_sf7_%d_IQ.csv', ii));
+    rdata_struct{ii}=importdata(sprintf('data/p1_sf7_%d_IQ.csv', ii));
     len(ii) = length(rdata_struct{ii});
 end
 

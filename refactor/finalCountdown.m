@@ -25,7 +25,7 @@ final_freq = (BW/2);%-freq_shift_per_sample; % The final frequency
 disp("created reference chirps")
 toc
 
-nsym=38.25;r=0;
+nsym=38.25;
 len = zeros(1, 8);
 rdata_struct = cell(1, 8);
 for ii=1:8
@@ -40,7 +40,7 @@ ps_struct = [];
 
 data=rdata_struct{5};
     temp=1i*data(:, 1)+data(:, 2);
-    temp=simple_bandpass(temp, 2, r);
+    temp=simple_bandpass(temp, 2, 0);
     maxi=0;
     maxval=0;
     for i=packet_size+1:1000:length(temp)-packet_size-1
@@ -60,7 +60,7 @@ data=rdata_struct{5};
 loc_weight=[];
 data=rdata_struct{1};
     temp=1i*data(:, 1)+data(:, 2);
-    temp=simple_bandpass(temp, 2, r);
+    temp=simple_bandpass(temp, 2, 0);
     maxi=0;
     maxval=0;
     for i=packet_size+1:1000:length(temp)-packet_size-1

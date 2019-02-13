@@ -8,6 +8,9 @@ function out = simple_bandpass(in, pct, pct2)
     cutoff = round((pct/100)*n/2);
     cutoff2 = round((pct2/100)*n/2);
     midpoint = round(n/2);
+%     disp("bandpass params")
+%     disp([midpoint, cutoff, cutoff2]);
+%     disp([1 ,cutoff, midpoint-cutoff2, midpoint+cutoff2, n-cutoff, n])
     a(1:cutoff) = 0;
     a(end-cutoff:end)=0;
     a(midpoint-cutoff2:midpoint+cutoff2)=0;
