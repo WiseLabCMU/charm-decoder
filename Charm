@@ -1,0 +1,16 @@
+SF = 10;
+BW = 1.25e5;
+chirp_size=1024;
+chirpsize=chirp_size;
+preamble_length=20;
+extra_sampling_factor = 1;
+Fs = BW;
+symbol_length=chirp_size;
+symbol_length_upsampled = extra_sampling_factor*chirp_size;
+freq_shift_per_sample =  Fs/symbol_length; % How each frequency bin maps to a difference in frequency
+Ts = 1/freq_shift_per_sample; % Symbol Duration
+f = linspace(-BW/2,BW/2-freq_shift_per_sample,symbol_length); % The X-Axis
+reset_freq = -BW/2; % The initial frequency of the base chirp
+final_freq = (BW/2)-freq_shift_per_sample; % The final frequency
+[up,down] =  my_create_chirpspecial(extra_sampling_factor*Fs,Ts,reset_freq,final_freq,chirp_size);
+
